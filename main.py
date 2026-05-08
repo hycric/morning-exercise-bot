@@ -22,8 +22,10 @@ def verify_signature(body, signature):
 
 def get_latest_videos(n=2):
     try:
-        resp = requests.get(RSS_URL, timeout=10)
-        root = ET.fromstring(resp.content)
+        headers = {"Accept-Encoding": "identity"}
+        resp = requests.get(RSS_URL, timeout=10, headers=headers)
+        resp.encoding = "utf-8"
+        root = ET.fromstring(resp.text.encode("utf-8"))
         ns = {"atom": "http://www.w3.org/2005/Atom"}
         entries = root.findall("atom:entry", ns)
         videos = []
