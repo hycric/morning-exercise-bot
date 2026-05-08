@@ -2,7 +2,7 @@ name: Daily Morning Exercise
 
 on:
   schedule:
-    - cron: '0 21 * * *'  # 台灣時間早上5點 (UTC+8, 所以UTC是21點)
+    - cron: '45 21 * * *'  # 台灣時間早上5點 (UTC+8, 所以UTC是21點)
   workflow_dispatch:  # 允許手動觸發測試
 
 jobs:
