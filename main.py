@@ -70,7 +70,7 @@ def webhook():
     for event in data.get("events", []):
         if event.get("type") == "message" and event.get("source", {}).get("type") == "group":
             text = event.get("message", {}).get("text", "")
-            if "阿婆早操影片" in text:
+            if text.strip() == "阿婆早操影片":
                 tz = pytz.timezone("Asia/Taipei")
                 now = datetime.now(tz)
                 hour = now.hour
