@@ -1,0 +1,21 @@
+name: Daily Morning Exercise
+
+on:
+  schedule:
+    - cron: '0 21 * * *'  # 台灣時間早上5點 (UTC+8, 所以UTC是21點)
+  workflow_dispatch:  # 允許手動觸發測試
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - run: pip install requests
+      - run: python main.py
+        env:
+          CHANNEL_ACCESS_TOKEN: ${{ secrets.CHANNEL_ACCESS_TOKEN }}
+          USER_ID: ${{ secrets.USER_ID }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
