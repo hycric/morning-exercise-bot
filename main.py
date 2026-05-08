@@ -22,16 +22,12 @@ def verify_signature(body, signature):
 
 def get_latest_videos(n=2):
     try:
-        headers = {"Accept-Encoding": "identity"}
-        resp = requests.get(RSS_URL, timeout=10, headers=headers)
-        resp.encoding = "utf-8"
-        root = ET.fromstring(resp.text.encode("utf-8"))
-        ns = {"atom": "http://www.w3.org/2005/Atom"}
-        entries = root.findall("atom:entry", ns)
+        import feedparser
+        feed = feedparser.parse(RSS_URL)
         videos = []
-        for entry in entries[:n]:
-            title = entry.find("atom:title", ns).text
-            link = entry.find("atom:link", ns).attrib["href"]
+        for entry in feed.entries[:n]:
+            title = entry.title
+            link = entry.link
             videos.append(f"🧘 {title}\n{link}")
         return videos if videos else ["今天暫時取不到影片，請稍後再試"]
     except Exception as e:
