@@ -21,16 +21,19 @@ def verify_signature(body, signature):
     return base64.b64encode(hash).decode("utf-8") == signature
 
 def get_latest_videos(n=2):
-    resp = requests.get(RSS_URL)
-    root = ET.fromstring(resp.content)
-    ns = {"atom": "http://www.w3.org/2005/Atom"}
-    entries = root.findall("atom:entry", ns)
-    videos = []
-    for entry in entries[:n]:
-        title = entry.find("atom:title", ns).text
-        link = entry.find("atom:link", ns).attrib["href"]
-        videos.append(f"🧘 {title}\n{link}")
-    return videos
+    try:
+        resp = requests.get(RSS_URL, timeout=10)
+        root = ET.fromstring(resp.content)
+        ns = {"atom": "http://www.w3.org/2005/Atom"}
+        entries = root.findall("atom:entry", ns)
+        videos = []
+        for entry in entries[:n]:
+            title = entry.find("atom:title", ns).text
+            link = entry.find("atom:link", ns).attrib["href"]
+            videos.append(f"🧘 {title}\n{link}")
+        return videos if videos else ["今天暫時取不到影片，請稍後再試"]
+    except Exception as e:
+        return [f"取得影片失敗：{str(e)}"]
 
 def reply_message(reply_token, messages):
     headers = {
