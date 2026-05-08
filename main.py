@@ -5,8 +5,11 @@ import requests
 import hashlib
 import hmac
 import base64
+from datetime import datetime
+import pytz
 
 app = Flask(__name__)
+sent_today = set()
 
 CHANNEL_ACCESS_TOKEN = os.environ.get("CHANNEL_ACCESS_TOKEN")
 CHANNEL_SECRET = os.environ.get("CHANNEL_SECRET")
@@ -68,9 +71,18 @@ def webhook():
         if event.get("type") == "message" and event.get("source", {}).get("type") == "group":
             text = event.get("message", {}).get("text", "")
             if "阿婆早操影片" in text:
-                reply_token = event.get("replyToken")
-                videos = get_latest_videos(1)
-                reply_message(reply_token, videos)
+                tz = pytz.timezone("Asia/Taipei")
+                now = datetime.now(tz)
+                hour = now.hour
+                today = now.strftime("%Y-%m-%d")
+                group_id = event.get("source", {}).get("groupId", "")
+                sent_key = f"{group_id}_{today}"
+                
+                if hour >= 5 and hour < 7 and sent_key not in sent_today:
+                    sent_today.add(sent_key)
+                    reply_token = event.get("replyToken")
+                    videos = get_latest_videos(1)
+                    reply_message(reply_token, videos)
 
     return "OK"
 
