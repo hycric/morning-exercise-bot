@@ -66,9 +66,11 @@ def webhook():
     data = request.get_json()
     for event in data.get("events", []):
         if event.get("type") == "message" and event.get("source", {}).get("type") == "group":
-            reply_token = event.get("replyToken")
-            videos = get_latest_videos(2)
-            reply_message(reply_token, videos)
+            text = event.get("message", {}).get("text", "")
+            if "阿婆早操影片" in text:
+                reply_token = event.get("replyToken")
+                videos = get_latest_videos(1)
+                reply_message(reply_token, videos)
 
     return "OK"
 
