@@ -22,12 +22,23 @@ def verify_signature(body, signature):
 
 def get_latest_videos(n=2):
     try:
-        import feedparser
-        feed = feedparser.parse(RSS_URL)
+        YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
+        url = "https://www.googleapis.com/youtube/v3/search"
+        params = {
+            "key": YOUTUBE_API_KEY,
+            "channelId": "UC6YO6az9CLMqJy3_3X2g0Vg",
+            "part": "snippet",
+            "order": "date",
+            "maxResults": n,
+            "type": "video"
+        }
+        resp = requests.get(url, params=params, timeout=10)
+        data = resp.json()
         videos = []
-        for entry in feed.entries[:n]:
-            title = entry.title
-            link = entry.link
+        for item in data.get("items", []):
+            title = item["snippet"]["title"]
+            video_id = item["id"]["videoId"]
+            link = f"https://www.youtube.com/watch?v={video_id}"
             videos.append(f"🧘 {title}\n{link}")
         return videos if videos else ["今天暫時取不到影片，請稍後再試"]
     except Exception as e:
