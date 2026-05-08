@@ -65,6 +65,12 @@ def webhook():
 
     return "OK"
 
+@app.route("/debug", methods=["GET"])
+def debug():
+    headers = {"Accept-Encoding": "identity"}
+    resp = requests.get(RSS_URL, timeout=10, headers=headers)
+    return resp.text[:500]
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
