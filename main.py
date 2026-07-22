@@ -29,7 +29,7 @@ def get_latest_video():
     item = items[0]
     title = item["snippet"]["title"]
     video_id = item["id"]["videoId"]
-    return f"🧘 早安！今天的早操影片：\n{title}\nhttps://www.youtube.com/watch?v={video_id}"
+    return f"🧘 阿婆早安！今天的早操影片：\n{title}\nhttps://www.youtube.com/watch?v={video_id}"
 
 def get_weather():
     try:
